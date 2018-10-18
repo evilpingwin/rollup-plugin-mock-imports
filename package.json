@@ -1,7 +1,7 @@
 {
   "name": "rollup-plugin-mock-imports",
   "version": "1.0.0",
-  "description": "",
+  "description": "Rollup plugin to mock es6 imports",
   "main": "dist/main.cjs.js",
   "module": "dist/main.esm.js",
   "scripts": {
@@ -13,8 +13,8 @@
     "test:watch": "jest --watchAll"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "pngwn <hello@pngwn.io>",
+  "license": "MIT",
   "devDependencies": {
     "@types/jest": "^23.3.5",
     "babel": "^6.23.0",
