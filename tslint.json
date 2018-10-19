@@ -5,6 +5,8 @@
     "no-relative-imports": false,
     "export-name": false,
     "curly": false,
-    "no-console": false
+    "no-console": false,
+    "interface-name": false,
+    "typedef": false
   }
 }
