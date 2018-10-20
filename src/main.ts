@@ -1,4 +1,4 @@
-import * as fs from "fs";
+// import * as fs from "fs";
 import * as fse from "fs-extra";
 import * as isBuiltIn from "is-builtin-module";
 import * as isRelative from "is-relative";
@@ -63,6 +63,17 @@ const checkForRoot = async (maybeRoot: string): Promise<[boolean, string]> => {
   }
 };
 
+const normaliseMockdules = (
+  filePath: string,
+  ext: string,
+  nodePath: string,
+): string => {
+  return `${filePath}${ext === "" ? ".js" : ext}`.replace(
+    nodePath,
+    "node_mockdules",
+  );
+};
+
 export function mockImports({
   mockall = true,
   ignore,
@@ -77,16 +88,14 @@ export function mockImports({
 
       if (mockall && ignore !== undefined) {
         const ignoreArr = [].concat(ignore);
-
+        // istanbul ignore else
         if (ignoreArr.some(v => importee.match(v) !== null)) return null;
       }
-      // builtins, node modules or files stored in node_modules
-      // are treated the same -- node_mockdules
-      let root;
+      // builtins are mocked like node modules
+      let thePath;
 
-      // I didn't write a test for this. I'm bad.
       if (isBuiltIn(importee)) {
-        root = await checkForRoot(process.cwd());
+        const root = await checkForRoot(process.cwd());
         if (root[0]) {
           const mockPath = `${root[1]}/node_mockdules/${importee}.js`;
 
@@ -100,7 +109,6 @@ export function mockImports({
         }
       }
 
-      // try to resolve the module
       let absPath;
       try {
         absPath =
@@ -110,31 +118,27 @@ export function mockImports({
       } catch {
         return null;
       }
+
       const ext = path.extname(absPath);
 
       if (!isRelative(importee) || isNode(importee)) {
-        const thePath = `${absPath}/${importee.split(".")[0]}${
-          ext === "" ? ".js" : ext
-        }`.replace(nodePath, "node_mockdules");
-
-        return (await fse.pathExists(thePath)) ? thePath : null;
-      }
-
-      if (isWeirdNode(absPath, nodePath)) {
-        const thePath = `${absPath.split(".")[0]}.js`.replace(
+        thePath = normaliseMockdules(
+          `${absPath}/${importee.split(".")[0]}`,
+          ext,
           nodePath,
-          "node_mockdules",
         );
+      } else if (isWeirdNode(absPath, nodePath)) {
+        thePath = normaliseMockdules(`${absPath.split(".")[0]}`, ext, nodePath);
+      } else {
+        let pathArray = absPath.split("/");
+        pathArray = [...pathArray.slice(0, -1), "__mocks__", pathArray.pop()];
 
-        return (await fse.pathExists(thePath)) ? thePath : null;
+        thePath = `${pathArray.join("/").split(".")[0]}${
+          ext === "" ? ".js" : ext
+        }`;
       }
 
-      const pathArray = absPath.split("/");
-      pathArray[pathArray.length - 1] = `__mocks__/${
-        pathArray[pathArray.length - 1]
-      }`;
-
-      return pathArray.join("/");
+      return (await fse.pathExists(thePath)) ? thePath : null;
     },
   };
 }
