@@ -7,6 +7,8 @@
     "curly": false,
     "no-console": false,
     "interface-name": false,
-    "typedef": false
+    "typedef": false,
+    "import-name": false,
+    "no-unsafe-any": false
   }
 }

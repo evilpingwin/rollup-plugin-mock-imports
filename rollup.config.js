@@ -7,7 +7,7 @@ import pkg from "./package.json";
 // CommonJS and ESM
 export default {
   input: "src/main.ts",
-  plugins: [resolve(), commonjs(), typescript(), terser()],
+  plugins: [resolve(), commonjs(), typescript()],
   output: [
     { file: pkg.module, format: "es" },
     { file: pkg.main, format: "cjs" },
