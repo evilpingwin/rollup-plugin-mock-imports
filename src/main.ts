@@ -16,7 +16,7 @@ interface UserOptions {
    * Only applies when `mockall: true`.\
    * Default: `undefined`
    */
-  ignore?: (RegExp | string)[] | RegExp | string;
+  ignore?: (string | RegExp)[] | RegExp | string;
   /**
    * A pattern (string or RegExp) or array of patterns to be included when mocking. This should match the imported module\
    * Only applies when `mockall: false`.\
@@ -74,6 +74,30 @@ const normaliseMockdules = (
   );
 };
 
+const shouldItRun = (
+  mockall: boolean,
+  importer: string | undefined,
+  importee: string | undefined,
+  ignore: (string | RegExp)[] | RegExp | string,
+  mock: (string | RegExp)[] | RegExp | string,
+): boolean => {
+  if ((!mockall && mock === undefined) || importer === undefined) return false;
+
+  if (mockall && ignore !== undefined) {
+    const ignoreArr = [].concat(ignore);
+    // istanbul ignore else
+    if (ignoreArr.some(v => importee.match(v) !== null)) return false;
+  }
+
+  if (!mockall && mock !== undefined) {
+    console.log(mock);
+    const mocksArr = [].concat(mock);
+    if (mocksArr.some(v => importee.match(v) !== null)) return true;
+  }
+
+  return true;
+};
+
 export function mockImports({
   mockall = true,
   ignore,
@@ -83,14 +107,10 @@ export function mockImports({
   return {
     name: "mock-imports",
     async resolveId(importee, importer) {
-      if ((!mockall && ignore === undefined) || importer === undefined)
-        return null;
+      // ts lint was shouting at me so I had to break these conditionals out
+      // istanbul ignore else
+      if (!shouldItRun(mockall, importer, importee, ignore, mock)) return null;
 
-      if (mockall && ignore !== undefined) {
-        const ignoreArr = [].concat(ignore);
-        // istanbul ignore else
-        if (ignoreArr.some(v => importee.match(v) !== null)) return null;
-      }
       // builtins are mocked like node modules
       let thePath;
 

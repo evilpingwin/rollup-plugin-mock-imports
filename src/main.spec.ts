@@ -186,7 +186,6 @@ test("built in modules should be mocked even if the node cwd is not root", async
   // this is probably not smart
   const temp = process.cwd;
   const path = process.cwd();
-  // tslint:disable-next-line
   process.cwd = () => `${path}/some/random/path/that/is/long`;
   expect(
     await mockImports().resolveId(
@@ -202,8 +201,6 @@ test("built in modules should be mocked even if the node cwd is not root", async
 test("built in modules should return null if the root app path cannot be resolved", async () => {
   const temp = process.cwd;
   const path = process.cwd();
-  // this should break the path resolution
-  // tslint:disable-next-line
   process.cwd = () => `/some/random/path/that/is/wrong`;
   expect(
     await mockImports().resolveId(
@@ -216,8 +213,6 @@ test("built in modules should return null if the root app path cannot be resolve
 
 test("built in modules should return log a warning if the root app path cannot be resolved", async () => {
   const temp = process.cwd;
-  // this should break the path resolution
-  // tslint:disable-next-line
   process.cwd = () => `/some/random/path/that/is/wrong`;
   const spy = spyOn(console, "warn");
   await mockImports().resolveId(
@@ -228,4 +223,57 @@ test("built in modules should return log a warning if the root app path cannot b
     "Couldn't resolve root path. Deferring to default module resolution.",
   );
   process.cwd = temp;
+});
+
+test("if `mockall` option is set to false return null", async () => {
+  expect(
+    await mockImports({ mockall: false }).resolveId(
+      "axios",
+      "/some/path/to/file.js",
+    ),
+  ).toBe(null);
+});
+
+test("with `mockall: false` `mock` patterns should be respected: string", async () => {
+  expect(
+    await mockImports({ mockall: false, mock: "axios" }).resolveId(
+      "axios",
+      "/some/path/to/file.js",
+    ),
+  ).toBe(
+    "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/node_mockdules/axios.js",
+  );
+});
+
+test("with `mockall: false` `mock` patterns should be respected: string[]", async () => {
+  expect(
+    await mockImports({ mockall: false, mock: ["fs", "axios"] }).resolveId(
+      "fs",
+      "/some/path/to/file.js",
+    ),
+  ).toBe(
+    "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/node_mockdules/fs.js",
+  );
+});
+
+test("with `mockall: false` `mock` patterns should be respected: RegExp", async () => {
+  expect(
+    await mockImports({ mockall: false, mock: /\.js/ }).resolveId(
+      "../tests/something",
+      "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/src/index.js",
+    ),
+  ).toBe(
+    "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/tests/__mocks__/something.js",
+  );
+});
+
+test("with `mockall: false` `mock` patterns should be respected: RegExp[]", async () => {
+  expect(
+    await mockImports({ mockall: false, mock: [/hail/, /some/] }).resolveId(
+      "../tests/something",
+      "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/src/index.js",
+    ),
+  ).toBe(
+    "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/tests/__mocks__/something.js",
+  );
 });
