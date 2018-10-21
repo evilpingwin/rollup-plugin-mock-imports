@@ -11,13 +11,13 @@ test("if `mockall` is false and no mock pattern is passed `resolveId` shold retu
   ).toBe(null);
 });
 
-test("it should resolve node dependencies correctly: 'module-name'", async () => {
+test("it should resolve node dependencies correctly", async () => {
   expect(await mockImports().resolveId("axios", "/some/path/to/file.js")).toBe(
     "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/node_mockdules/axios.js",
   );
 });
 
-test("it should resolve node module mocks with slashes correctly: 'module-name/file'", async () => {
+test("it should resolve node module mocks with slashes correctly", async () => {
   expect(
     await mockImports().resolveId("axios/index", "/some/path/to/file.js"),
   ).toBe(
@@ -25,7 +25,7 @@ test("it should resolve node module mocks with slashes correctly: 'module-name/f
   );
 });
 
-test("it should resolve node module mocks with slashes and extensions correctly: 'module-name/file.ext'", async () => {
+test("it should resolve node module mocks with slashes and extensions correctly", async () => {
   expect(
     await mockImports().resolveId("axios/index.js", "/some/path/to/file.js"),
   ).toBe(
@@ -33,7 +33,7 @@ test("it should resolve node module mocks with slashes and extensions correctly:
   );
 });
 
-test("it should resolve node module mocks with multiple slashes correctly: 'module-name/folder/file'", async () => {
+test("it should resolve node module mocks with multiple slashes correctly", async () => {
   expect(
     await mockImports().resolveId("lodash/fp/curryN", "/some/path/to/file.js"),
   ).toBe(
@@ -41,7 +41,7 @@ test("it should resolve node module mocks with multiple slashes correctly: 'modu
   );
 });
 
-test("it should resolve node module mocks with relative paths correctly: '../module_path/module-name/file.ext'", async () => {
+test("it should resolve node module mocks with relative paths correctly", async () => {
   // why would anyone ever actually do this
   // i bet someone does though
   // and they'll be emailing me death threats at 4am if i don't test it
@@ -55,7 +55,7 @@ test("it should resolve node module mocks with relative paths correctly: '../mod
   );
 });
 
-test("it should resolve node module mocks with relative paths and no extensions correctly: '../module_path/module-name/file'", async () => {
+test("it should resolve node module mocks with relative paths and no extensions correctly", async () => {
   expect(
     await mockImports().resolveId(
       "../node_modules/axios/index",
@@ -66,7 +66,7 @@ test("it should resolve node module mocks with relative paths and no extensions 
   );
 });
 
-test("it should resolve node builtin mocks correctly: 'fs', 'path', etc.", async () => {
+test("it should resolve node builtin mocks correctly: 'fs'", async () => {
   expect(
     await mockImports().resolveId(
       "fs",
@@ -86,7 +86,7 @@ test("if no builtin mock is present it should return null", async () => {
   ).toBe(null);
 });
 
-test("it should resolve local module mocks correctly: '../folder/local-file.js'", async () => {
+test("it should resolve local module mocks correctly", async () => {
   expect(
     await mockImports().resolveId(
       "../tests/something.js",
@@ -97,7 +97,7 @@ test("it should resolve local module mocks correctly: '../folder/local-file.js'"
   );
 });
 
-test("it should resolve local module mocks with no extension correctly: '../folder/local-file'", async () => {
+test("it should resolve local module mocks with no extension correctly", async () => {
   expect(
     await mockImports().resolveId(
       "../tests/something",
@@ -243,7 +243,7 @@ test("with `mockall: false` `mock` patterns should be respected: string[]", asyn
 test("with `mockall: false` `mock` patterns should be respected: RegExp", async () => {
   expect(
     await mockImports({ mockall: false, mock: /\.js/ }).resolveId(
-      "../tests/something",
+      "../tests/something.js",
       "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/src/index.js",
     ),
   ).toBe(

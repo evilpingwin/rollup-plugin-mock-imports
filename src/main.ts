@@ -88,10 +88,10 @@ const shouldItRun = (
     // istanbul ignore else
     if (ignoreArr.some(v => importee.match(v) !== null)) return false;
   }
-
   if (!mockall && mock !== undefined) {
     const mocksArr = [].concat(mock);
-    if (mocksArr.some(v => importee.match(v) !== null)) return true;
+    // istanbul ignore else
+    if (!mocksArr.some(v => importee.match(v) !== null)) return false;
   }
 
   return true;
@@ -106,11 +106,10 @@ export function mockImports({
   return {
     name: "mock-imports",
     async resolveId(importee, importer) {
-      // console.log(importee, importer);
       // ts lint was shouting at me so I had to break these conditionals out
       // istanbul ignore else
-      if (!shouldItRun(mockall, importer, importee, ignore, mock)) return null;
 
+      if (!shouldItRun(mockall, importer, importee, ignore, mock)) return null;
       // builtins are mocked like node modules
       let thePath;
 
@@ -138,7 +137,6 @@ export function mockImports({
         return null;
       }
       const ext = path.extname(absPath);
-
       if (!isRelative(importee) || isNode(importee)) {
         thePath = normaliseMockdules(
           `${absPath}/${importee.split(".")[0]}`,

@@ -88,3 +88,37 @@ test("ignore options should be respected: RegExp[]", async () => {
   });
   expect(output).toEqual(expected);
 });
+
+// mocks when `mockall: false`
+
+test("mock options should be respected when `mockall: false`: string", async () => {
+  const { output, expected } = await build("17", {
+    mockall: false,
+    mock: "fp",
+  });
+  expect(output).toEqual(expected);
+});
+
+test("mock options should be respected when `mockall: false`: string[]", async () => {
+  const { output, expected } = await build("18", {
+    mockall: false,
+    mock: ["fs", "axios"],
+  });
+  expect(output).toEqual(expected);
+});
+
+test("mock options should be respected when `mockall: false`: RegExp", async () => {
+  const { output, expected } = await build("19", {
+    mockall: false,
+    mock: /.+mock.+\.js$/,
+  });
+  expect(output).toEqual(expected);
+});
+
+test("mock options should be respected when `mockall: false`: RegExp[]", async () => {
+  const { output, expected } = await build("20", {
+    mockall: false,
+    mock: [/.+mock.+\.js$/, /axi.+/],
+  });
+  expect(output).toEqual(expected);
+});
