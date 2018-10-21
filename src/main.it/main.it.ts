@@ -57,6 +57,6 @@ test("it should mock out relative imports with no extension: './file'", async ()
 });
 
 test("if there is no matching mock relative imports should be ignored", async () => {
-  const { output, expected } = await build("12", {}, false);
+  const { output, expected } = await build("12");
   expect(output).toEqual(expected);
 });
