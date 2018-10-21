@@ -75,7 +75,7 @@ const normaliseMockdules = (
 
 const shouldItRun = (
   mockall: boolean,
-  importer: string | undefined,
+  importer: string,
   importee: string | undefined,
   ignore: (string | RegExp)[] | RegExp | string,
   mock: (string | RegExp)[] | RegExp | string,

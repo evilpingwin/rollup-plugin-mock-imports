@@ -25,3 +25,6 @@ coverage
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# i dunno what this shit it
+.rpt2_cache

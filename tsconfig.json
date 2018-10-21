@@ -3,15 +3,15 @@
     "target": "es6",
     "diagnostics": true,
     "noImplicitThis": true,
-    "allowJs": true,
     "lib": ["es5", "es6", "dom"],
     "importHelpers": true,
     "moduleResolution": "node",
     "outDir": "./dist",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "strict": true
+    "declaration": true,
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": ["src"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "./types", "src/main.spec.ts", "src/main.it"]
 }
