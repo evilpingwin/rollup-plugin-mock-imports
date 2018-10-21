@@ -15,6 +15,7 @@
   "keywords": [],
   "author": "pngwn <hello@pngwn.io>",
   "license": "MIT",
+  "types": "dist/main.d.ts",
   "dependencies": {
     "app-root-path": "^2.1.0",
     "fs-extra": "^7.0.0",
