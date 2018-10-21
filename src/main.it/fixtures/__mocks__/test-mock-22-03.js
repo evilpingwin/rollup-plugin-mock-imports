@@ -1,0 +1,1 @@
+export default () => `FAKE! test-mock-22-03.js`

@@ -261,3 +261,12 @@ test("with `mockall: false` `mock` patterns should be respected: RegExp[]", asyn
     "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/tests/__mocks__/something.js",
   );
 });
+
+test("`mockall: false` with non-matching `mock` patterns should be ignored", async () => {
+  expect(
+    await mockImports({ mockall: false, mock: /xyz/ }).resolveId(
+      "../tests/something",
+      "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/src/index.js",
+    ),
+  ).toBe(null);
+});

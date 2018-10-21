@@ -122,3 +122,16 @@ test("mock options should be respected when `mockall: false`: RegExp[]", async (
   });
   expect(output).toEqual(expected);
 });
+
+test("`mockall: false` with non-matching  mock patterns should be ignored", async () => {
+  const { output, expected } = await build("21", {
+    mockall: false,
+    mock: [/.+mock.+\.js$/],
+  });
+  expect(output).toEqual(expected);
+});
+
+test("'deep' mocks should work", async () => {
+  const { output, expected } = await build("22");
+  expect(output).toEqual(expected);
+});
