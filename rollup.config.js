@@ -8,6 +8,16 @@ import pkg from "./package.json";
 export default {
   input: "src/main.ts",
   plugins: [resolve(), commonjs(), typescript()],
+  external: [
+    "path",
+    "fs",
+    "assert",
+    "os",
+    "module",
+    "util",
+    "constants",
+    "stream",
+  ],
   output: [
     { file: pkg.module, format: "es" },
     { file: pkg.main, format: "cjs" },

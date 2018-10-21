@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "es6",
     "diagnostics": true,
     "noImplicitThis": true,
     // "noEmitOnError": true,
@@ -8,7 +8,10 @@
     "lib": ["es5", "es6", "dom"],
     "importHelpers": true,
     "moduleResolution": "node",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": true
   },
   "include": ["src"],
   "exclude": ["node_modules"]

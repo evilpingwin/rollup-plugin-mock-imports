@@ -21,6 +21,9 @@
     "is-builtin-module": "^3.0.0",
     "is-relative": "^1.0.0"
   },
+  "peerDependencies": {
+    "rollup": "^0.66.6"
+  },
   "devDependencies": {
     "@types/fs-extra": "^5.0.4",
     "@types/jest": "^23.3.5",
