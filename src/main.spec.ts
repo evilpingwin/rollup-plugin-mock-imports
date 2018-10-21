@@ -11,13 +11,13 @@ test("if `mockall` is false and no mock pattern is passed `resolveId` shold retu
   ).toBe(null);
 });
 
-test("it should resolve node dependencies correctly", async () => {
+test("it should resolve node dependencies correctly: 'module-name'", async () => {
   expect(await mockImports().resolveId("axios", "/some/path/to/file.js")).toBe(
     "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/node_mockdules/axios.js",
   );
 });
 
-test("it should resolve node module mocks correctly, even if they're a bit weird", async () => {
+test("it should resolve node module mocks with slashes correctly: 'module-name/file'", async () => {
   expect(
     await mockImports().resolveId("axios/index", "/some/path/to/file.js"),
   ).toBe(
@@ -25,7 +25,7 @@ test("it should resolve node module mocks correctly, even if they're a bit weird
   );
 });
 
-test("it should resolve node module mocks correctly, even with file extensions", async () => {
+test("it should resolve node module mocks with slashes and extensions correctly: 'module-name/file.ext'", async () => {
   expect(
     await mockImports().resolveId("axios/index.js", "/some/path/to/file.js"),
   ).toBe(
@@ -33,15 +33,7 @@ test("it should resolve node module mocks correctly, even with file extensions",
   );
 });
 
-test("it should resolve node module mocks correctly, even more weird imports", async () => {
-  expect(
-    await mockImports().resolveId("lodash/fp", "/some/path/to/file.js"),
-  ).toBe(
-    "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/node_mockdules/lodash/fp.js",
-  );
-});
-
-test("it should resolve node module mocks correctly, more weird imports", async () => {
+test("it should resolve node module mocks with multiple slashes correctly: 'module-name/folder/file'", async () => {
   expect(
     await mockImports().resolveId("lodash/fp/curryN", "/some/path/to/file.js"),
   ).toBe(
@@ -49,15 +41,7 @@ test("it should resolve node module mocks correctly, more weird imports", async 
   );
 });
 
-test("it should resolve node module mocks correctly, more weird imports", async () => {
-  expect(
-    await mockImports().resolveId("lodash/fp/curryN", "/some/path/to/file.js"),
-  ).toBe(
-    "/Users/evilpingwin/Projects/rollup-plugin-mock-imports/node_mockdules/lodash/fp/curryN.js",
-  );
-});
-
-test("it should resolve node module mocks correctly, even if they're imported via a relative path", async () => {
+test("it should resolve node module mocks with relative paths correctly: '../module_path/module-name/file.ext'", async () => {
   // why would anyone ever actually do this
   // i bet someone does though
   // and they'll be emailing me death threats at 4am if i don't test it
@@ -71,7 +55,7 @@ test("it should resolve node module mocks correctly, even if they're imported vi
   );
 });
 
-test("it should resolve node module mocks correctly, even if they're imported via a relative path with no extension", async () => {
+test("it should resolve node module mocks with relative paths and no extensions correctly: '../module_path/module-name/file'", async () => {
   expect(
     await mockImports().resolveId(
       "../node_modules/axios/index",
@@ -82,7 +66,7 @@ test("it should resolve node module mocks correctly, even if they're imported vi
   );
 });
 
-test("it should resolve node builtin mocks correctly", async () => {
+test("it should resolve node builtin mocks correctly: 'fs', 'path', etc.", async () => {
   expect(
     await mockImports().resolveId(
       "fs",
@@ -102,7 +86,7 @@ test("if no builtin mock is present it should return null", async () => {
   ).toBe(null);
 });
 
-test("it should resolve local module mocks correctly", async () => {
+test("it should resolve local module mocks correctly: '../folder/local-file.js'", async () => {
   expect(
     await mockImports().resolveId(
       "../tests/something.js",
@@ -113,7 +97,7 @@ test("it should resolve local module mocks correctly", async () => {
   );
 });
 
-test("it should resolve local module mocks correctly, even if there is no extension", async () => {
+test("it should resolve local module mocks with no extension correctly: '../folder/local-file'", async () => {
   expect(
     await mockImports().resolveId(
       "../tests/something",
