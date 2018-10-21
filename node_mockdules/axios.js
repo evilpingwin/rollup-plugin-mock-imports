@@ -1,1 +1,1 @@
-export default "axios.js";
+export default str => str.toUpperCase();

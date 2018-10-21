@@ -81,6 +81,7 @@ const shouldItRun = (
   ignore: (string | RegExp)[] | RegExp | string,
   mock: (string | RegExp)[] | RegExp | string,
 ): boolean => {
+  // console.log(mockall);
   if ((!mockall && mock === undefined) || importer === undefined) return false;
 
   if (mockall && ignore !== undefined) {
@@ -90,7 +91,6 @@ const shouldItRun = (
   }
 
   if (!mockall && mock !== undefined) {
-    console.log(mock);
     const mocksArr = [].concat(mock);
     if (mocksArr.some(v => importee.match(v) !== null)) return true;
   }
@@ -107,6 +107,7 @@ export function mockImports({
   return {
     name: "mock-imports",
     async resolveId(importee, importer) {
+      // console.log(importee, importer);
       // ts lint was shouting at me so I had to break these conditionals out
       // istanbul ignore else
       if (!shouldItRun(mockall, importer, importee, ignore, mock)) return null;

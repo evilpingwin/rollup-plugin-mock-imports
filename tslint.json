@@ -9,6 +9,7 @@
     "interface-name": false,
     "typedef": false,
     "import-name": false,
-    "no-unsafe-any": false
+    "no-unsafe-any": false,
+    "no-implicit-dependencies": [true, "dev"]
   }
 }
