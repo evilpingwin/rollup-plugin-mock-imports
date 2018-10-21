@@ -18,3 +18,10 @@ yarn-error.log*
 
 # testy stuff
 coverage
+
+# editor
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
