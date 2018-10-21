@@ -1,7 +1,7 @@
 var lodash = () => "hello from lodash/fp.js";
 
-function testMock06() {
+function testMock07() {
   console.log(lodash());
 }
 
-export default testMock06;
+export default testMock07;

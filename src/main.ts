@@ -81,7 +81,6 @@ const shouldItRun = (
   ignore: (string | RegExp)[] | RegExp | string,
   mock: (string | RegExp)[] | RegExp | string,
 ): boolean => {
-  // console.log(mockall);
   if ((!mockall && mock === undefined) || importer === undefined) return false;
 
   if (mockall && ignore !== undefined) {
@@ -129,7 +128,6 @@ export function mockImports({
           return null;
         }
       }
-
       let absPath;
       try {
         absPath =
@@ -139,7 +137,6 @@ export function mockImports({
       } catch {
         return null;
       }
-
       const ext = path.extname(absPath);
 
       if (!isRelative(importee) || isNode(importee)) {
@@ -152,11 +149,12 @@ export function mockImports({
         thePath = normaliseMockdules(`${absPath.split(".")[0]}`, ext, nodePath);
       } else {
         let pathArray = absPath.split("/");
-        pathArray = [...pathArray.slice(0, -1), "__mocks__", pathArray.pop()];
-
-        thePath = `${pathArray.join("/").split(".")[0]}${
+        const fileName = `${pathArray.slice(-1)[0].split(".")[0]}${
           ext === "" ? ".js" : ext
         }`;
+        pathArray = [...pathArray.slice(0, -1), "__mocks__", fileName];
+
+        thePath = pathArray.join("/");
       }
 
       return (await fse.pathExists(thePath)) ? thePath : null;
