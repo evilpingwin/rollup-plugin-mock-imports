@@ -1,1 +1,1 @@
-export default "fs.js";
+export default () => "hello from fs.js";

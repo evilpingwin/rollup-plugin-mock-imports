@@ -30,8 +30,8 @@ export async function build(
   });
 
   const files = await Promise.all([
-    fse.readFile(`${path}/__temp__/test-output-02.js`),
-    fse.readFile(`${path}/fixtures/test-output-02.js`),
+    fse.readFile(`${path}/__temp__/test-output-${num}.js`),
+    fse.readFile(`${path}/fixtures/test-output-${num}.js`),
   ]);
 
   if (unlink) {
@@ -41,7 +41,7 @@ export async function build(
   const fileHash = files.map(f =>
     crypto
       .createHash("sha1")
-      .update(files[0])
+      .update(f)
       .digest("hex"),
   );
 

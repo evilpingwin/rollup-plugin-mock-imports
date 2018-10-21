@@ -1,1 +1,1 @@
-export default "lodash/fp.js";
+export default () => "hello from lodash/fp.js";
