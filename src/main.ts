@@ -1,4 +1,3 @@
-// import * as fs from "fs";
 import fse from "fs-extra";
 import isBuiltIn from "is-builtin-module";
 import isRelative from "is-relative";
