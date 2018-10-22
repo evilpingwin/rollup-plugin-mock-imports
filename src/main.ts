@@ -131,10 +131,10 @@ export function mockImports({
         }
       }
       let absPath;
-      let file = {
-        ext: "",
-        name: "",
-      };
+      // let file = {
+      //   ext: "",
+      //   name: "",
+      // };
 
       try {
         absPath =
@@ -146,11 +146,13 @@ export function mockImports({
       }
 
       const pathArr = absPath.split(path.sep);
-      const impArr = importee
+      const impArr = path
+        .normalize(importee)
         .split(path.sep)
         .filter(v => v !== "." && v !== "..");
-      file = path.parse(pathArr[pathArr.length - 1]);
+      const file = path.parse(pathArr[pathArr.length - 1]);
       const find: number = pathArr.findIndex(v => v === impArr[0]);
+
       pathArr.splice(find, find + importee.split(path.sep).length, ...impArr);
       pathArr[pathArr.length - 1] = path.parse(
         pathArr[pathArr.length - 1],
@@ -161,7 +163,7 @@ export function mockImports({
         thePath = normaliseMockdules(absPath, file.ext, nodePath);
       } else {
         pathArr.splice(-1, 0, "__mocks__");
-        thePath = `${path.join(path.sep, ...pathArr)}${
+        thePath = `${path.join(isWin ? "" : path.sep, ...pathArr)}${
           file.ext === "" ? ".js" : file.ext
         }`;
       }
