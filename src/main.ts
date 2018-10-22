@@ -2,7 +2,7 @@ import fse from "fs-extra";
 import isBuiltIn from "is-builtin-module";
 import isRelative from "is-relative";
 import path from "path";
-import { isNode, isWeirdNode } from "./util";
+import { isNode } from "./util";
 
 const isWin = process.platform === "win32";
 
@@ -130,11 +130,8 @@ export function mockImports({
           return null;
         }
       }
+
       let absPath;
-      // let file = {
-      //   ext: "",
-      //   name: "",
-      // };
 
       try {
         absPath =
@@ -145,6 +142,7 @@ export function mockImports({
         return null;
       }
 
+      // Oh dear
       const pathArr = absPath.split(path.sep);
       const impArr = path
         .normalize(importee)
@@ -157,15 +155,24 @@ export function mockImports({
       pathArr[pathArr.length - 1] = path.parse(
         pathArr[pathArr.length - 1],
       ).name;
-      absPath = path.resolve(path.join(isWin ? "" : path.sep, ...pathArr));
+      absPath = path.resolve(
+        path.join(
+          // istanbul ignore next
+          !isWin ? path.sep : "",
+          ...pathArr,
+        ),
+      );
 
       if (absPath.includes(nodePath)) {
         thePath = normaliseMockdules(absPath, file.ext, nodePath);
       } else {
         pathArr.splice(-1, 0, "__mocks__");
-        thePath = `${path.join(isWin ? "" : path.sep, ...pathArr)}${
-          file.ext === "" ? ".js" : file.ext
-        }`;
+
+        thePath = `${path.join(
+          // istanbul ignore next
+          !isWin ? path.sep : "",
+          ...pathArr,
+        )}${file.ext === "" ? ".js" : file.ext}`;
       }
 
       return (await fse.pathExists(thePath)) ? thePath : null;
