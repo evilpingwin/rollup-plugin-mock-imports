@@ -1,9 +1,9 @@
-import * as crypto from "crypto";
-import * as fse from "fs-extra";
-import * as rollup from "rollup";
-import * as commonjs from "rollup-plugin-commonjs";
-import * as json from "rollup-plugin-json";
-import * as resolve from "rollup-plugin-node-resolve";
+import crypto from "crypto";
+import fse from "fs-extra";
+import { rollup } from "rollup";
+import commonjs from "rollup-plugin-commonjs";
+import json from "rollup-plugin-json";
+import resolve from "rollup-plugin-node-resolve";
 import { mockImports } from "../main";
 
 const path = `${process.cwd()}/src/main.it`;
@@ -13,7 +13,7 @@ export async function build(
   mockOptions: object = {},
   unlink: boolean = true,
 ): Promise<{ output: string; expected: string }> {
-  const bundle = await rollup.rollup({
+  const bundle = await rollup({
     input: `${path}/fixtures/test-mock-${num}.js`,
     plugins: [
       mockImports(mockOptions),
