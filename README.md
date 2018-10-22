@@ -63,24 +63,46 @@ Now the node module `some-module` will be automatically mocked with the `some-mo
 ```js
 // ...other rollup stuff
 
-  plugins: [mockImports({
-    // by default if there is a mock present for a module it will be mocked.
-    // you can switch this off and explicitly state which modules should be mocked.
+  plugins: [ mockImports({
+    // by default if there is a mock present
+    // for a module it will be mocked.
+    //
+    // you can switch this off and explicitly
+    // state which modules should be mocked.
+    //
     // true | false
     mockall: true,
-    // path to your node modules folder, pretty basic
+    // path to your node modules folder
     // string
     nodePath: "node_modules",
-    // if mockall is `true` you can ignore certain mocks with this option.
-    // if any of the ignore patterns match the import ('./myFile' or 'my-module') it will not be mocked even if one is present
-    // it can be a string, RegExp, or an array of string/regexp
-    // The array can contain either strings or RegExps: ["my-module", /something.+/] is fine
+    // if mockall is `true` you can ignore certain
+    // mocks with this option.
+    //
+    // if any of the ignore patterns match the import
+    // ('./myFile' or 'my-module') it will not be
+    // mocked even if one is present
+    //
+    // it can be a string, RegExp, or an array of
+    // string/regexp
+    //
+    // The array can contain either strings or
+    // RegExps: ["my-module", /something.+/] is fine
+    //
     // string | RegExp | (RegExp | string)<Array>
     ignore: undefined,
-    // the opposite of ignore. If mockall is `false` you can mock on a cases by case basis.
-    // if any of the mock patterns match the import ('./myFile' or 'my-module') it will be mocked if one is present
-    // it can be a string, RegExp, or an array of string or RegExp
-    // The array can contain either strings or RegExps: ["my-module", /something.+/] is fine
+    // the opposite of ignore. If mockall is `false`
+    // you can mock on a cases by case basis.
+    //
+    // if any of the mock patterns match the import
+    // ('./myFile' or 'my-module') it will be mocked
+    // if one is present
+    //
+    // it can be a string, RegExp, or an array of
+    // string or RegExp
+    //
+    // The array can contain either strings or
+    // RegExps: ["my-module", /something.+/] is fine
+    //
     // string | RegExp | (RegExp | string)<Array>
     mock: undefined
   }), ...moreplugins],
