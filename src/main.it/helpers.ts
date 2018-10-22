@@ -1,12 +1,13 @@
 import crypto from "crypto";
 import fse from "fs-extra";
+import path from "path";
 import { rollup } from "rollup";
 import commonjs from "rollup-plugin-commonjs";
 import json from "rollup-plugin-json";
 import resolve from "rollup-plugin-node-resolve";
 import { mockImports } from "../main";
 
-const path = `${process.cwd()}/src/main.it`;
+const filePath = path.resolve(`${process.cwd()}/src/main.it`);
 
 export async function build(
   num: string,
@@ -14,7 +15,7 @@ export async function build(
   unlink: boolean = true,
 ): Promise<{ output: string; expected: string }> {
   const bundle = await rollup({
-    input: `${path}/fixtures/test-mock-${num}.js`,
+    input: `${filePath}/fixtures/test-mock-${num}.js`,
     plugins: [
       mockImports(mockOptions),
       resolve({ browser: true }),
@@ -24,18 +25,18 @@ export async function build(
   });
 
   await bundle.write({
-    file: `${path}/__temp__/test-output-${num}.js`,
+    file: `${filePath}/__temp__/test-output-${num}.js`,
     sourcemap: false,
     format: "esm",
   });
 
   const files = await Promise.all([
-    fse.readFile(`${path}/__temp__/test-output-${num}.js`),
-    fse.readFile(`${path}/fixtures/test-output-${num}.js`),
+    fse.readFile(`${filePath}/__temp__/test-output-${num}.js`),
+    fse.readFile(`${filePath}/fixtures/test-output-${num}.js`),
   ]);
 
   if (unlink) {
-    await fse.unlink(`${path}/__temp__/test-output-${num}.js`);
+    await fse.unlink(`${filePath}/__temp__/test-output-${num}.js`);
   }
 
   const fileHash = files.map(f =>
