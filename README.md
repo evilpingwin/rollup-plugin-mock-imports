@@ -8,7 +8,7 @@ There are various options you can make use of to customise the behaviour a littl
 
 In most cases you'll want to use normal mocks (whichever mocking library you prefer) but this is useful when you need to compile before testing for whatever reason which often makes mocking difficult or impossible. I created this plugin so I could easily test Svelte components that had been compiled and mounted to a JSDOM instance without significantly altering how I wrote my code.
 
-_I chose `node_mockdules` partly because I am hilarious and partly because this means the mock and `node_modules` folders will be next to one another in most IDEs and File Managers: your happiness is my top priority. It also reminds of [DuckTales](https://en.wikipedia.org/wiki/DuckTales). You can change the default mock folders if you really want to._
+_I chose `node_mockdules` partly because I am hilarious and partly because this means the mock and `node_modules` folders will be next to one another in most IDEs and File Managers: your happiness is my top priority. It also reminds of [DuckTales](https://en.wikipedia.org/wiki/DuckTales)._
 
 ---
 
@@ -24,7 +24,7 @@ yarn add --dev rollup-plugin-mock-imports rollup
 
 ## Use it
 
-Simply import it as a named module and use it as a plugin. This will typically be used in a node environment so you will probably need [rollup-plugin-node-resolve]() as well. A standard config might look something like this:
+Simply import it as a named module and use it as a plugin. This will typically be used in a node environment so you will probably need [rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) as well. A standard config might look something like this:
 
 ```js
 // rollup.config.js
@@ -57,3 +57,35 @@ Now you can simple carry on as normal. If you have no mocks then nothing will ha
 ```
 
 Now the node module `some-module` will be automatically mocked with the `some-module.js` file, the `src/user.js` import will be mocked out for `src/__mocks__/user.js`. Simple.
+
+`mockImports()` takes and options object, there are not many.
+
+```js
+// ...other rollup stuff
+
+  plugins: [mockImports({
+    // by default if there is a mock present for a module it will be mocked.
+    // you can switch this off and explicitly state which modules should be mocked.
+    // true | false
+    mockall: true,
+    // path to your node modules folder, pretty basic
+    // string
+    nodePath: "node_modules",
+    // if mockall is `true` you can ignore certain mocks with this option.
+    // if any of the ignore patterns match the import ('./myFile' or 'my-module') it will not be mocked even if one is present
+    // it can be a string, RegExp, or an array of string/regexp
+    // The array can contain either strings or RegExps: ["my-module", /something.+/] is fine
+    // string | RegExp | (RegExp | string)<Array>
+    ignore: undefined,
+    // the opposite of ignore. If mockall is `false` you can mock on a cases by case basis.
+    // if any of the mock patterns match the import ('./myFile' or 'my-module') it will be mocked if one is present
+    // it can be a string, RegExp, or an array of string or RegExp
+    // The array can contain either strings or RegExps: ["my-module", /something.+/] is fine
+    // string | RegExp | (RegExp | string)<Array>
+    mock: undefined
+  }), ...moreplugins],
+
+// other rollup stuf...
+```
+
+That's pretty much it for now. Should work most of the time. Probably.
