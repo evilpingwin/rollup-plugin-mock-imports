@@ -4,6 +4,8 @@ import isRelative from "is-relative";
 import path from "path";
 import { isNode, isWeirdNode } from "./util";
 
+const isWin = process.platform === "win32";
+
 interface UserOptions {
   /**
    * For each import should mocks be checked for and applied?\
@@ -153,8 +155,7 @@ export function mockImports({
       pathArr[pathArr.length - 1] = path.parse(
         pathArr[pathArr.length - 1],
       ).name;
-
-      absPath = path.normalize(path.join(path.sep, ...pathArr));
+      absPath = path.resolve(path.join(isWin ? "" : path.sep, ...pathArr));
 
       if (absPath.includes(nodePath)) {
         thePath = normaliseMockdules(absPath, file.ext, nodePath);
