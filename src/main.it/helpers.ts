@@ -31,15 +31,16 @@ export async function build(
   });
 
   const files = await Promise.all([
-    fse.readFile(`${filePath}/__temp__/test-output-${num}.js`),
-    fse.readFile(`${filePath}/fixtures/test-output-${num}.js`),
+    fse.readFile(`${filePath}/__temp__/test-output-${num}.js`, "utf8"),
+    fse.readFile(`${filePath}/fixtures/test-output-${num}.js`, "utf8"),
   ]);
+  const trimmedFiles = files.map(v => v.replace(/\t|\r|\n|\s{2,}/g, ""));
 
   if (unlink) {
     await fse.unlink(`${filePath}/__temp__/test-output-${num}.js`);
   }
 
-  const fileHash = files.map(f =>
+  const fileHash = trimmedFiles.map(f =>
     crypto
       .createHash("sha1")
       .update(f)
