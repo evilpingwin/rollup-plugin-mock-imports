@@ -3,7 +3,7 @@
     "target": "es6",
     "diagnostics": true,
     "noImplicitThis": true,
-    "lib": ["es5", "es6", "dom"],
+    "lib": ["es5", "es6", "es7", "dom"],
     "importHelpers": true,
     "moduleResolution": "node",
     "outDir": "./dist",

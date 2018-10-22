@@ -115,7 +115,9 @@ export function mockImports({
       if (isBuiltIn(importee)) {
         const root = await checkForRoot(process.cwd());
         if (root[0]) {
-          const mockPath = `${root[1]}/node_mockdules/${importee}.js`;
+          const mockPath = path.normalize(
+            `${root[1]}/node_mockdules/${importee}.js`,
+          );
 
           return (await fse.pathExists(mockPath)) ? mockPath : null;
         } else {
@@ -127,35 +129,40 @@ export function mockImports({
         }
       }
       let absPath;
+      let file = {
+        ext: "",
+        name: "",
+      };
+
       try {
         absPath =
           !isRelative(importee) || isNode(importee)
-            ? require.resolve(importee).split(`/${importee}`)[0]
+            ? require.resolve(importee)
             : path.resolve(path.dirname(importer), importee);
       } catch {
         return null;
       }
-      const ext = path.extname(absPath);
-      if (!isRelative(importee) || isNode(importee)) {
-        thePath = path.normalize(
-          normaliseMockdules(
-            `${absPath}/${importee.split(".")[0]}`,
-            ext,
-            nodePath,
-          ),
-        );
-      } else if (isWeirdNode(absPath, nodePath)) {
-        thePath = path.normalize(
-          normaliseMockdules(`${absPath.split(".")[0]}`, ext, nodePath),
-        );
-      } else {
-        let pathArray = absPath.split("/");
-        const fileName = `${pathArray.slice(-1)[0].split(".")[0]}${
-          ext === "" ? ".js" : ext
-        }`;
-        pathArray = [...pathArray.slice(0, -1), "__mocks__", fileName];
 
-        thePath = path.normalize(pathArray.join("/"));
+      const pathArr = absPath.split(path.sep);
+      const impArr = importee
+        .split(path.sep)
+        .filter(v => v !== "." && v !== "..");
+      file = path.parse(pathArr[pathArr.length - 1]);
+      const find: number = pathArr.findIndex(v => v === impArr[0]);
+      pathArr.splice(find, find + importee.split(path.sep).length, ...impArr);
+      pathArr[pathArr.length - 1] = path.parse(
+        pathArr[pathArr.length - 1],
+      ).name;
+
+      absPath = path.normalize(path.join(path.sep, ...pathArr));
+
+      if (absPath.includes(nodePath)) {
+        thePath = normaliseMockdules(absPath, file.ext, nodePath);
+      } else {
+        pathArr.splice(-1, 0, "__mocks__");
+        thePath = `${path.join(path.sep, ...pathArr)}${
+          file.ext === "" ? ".js" : file.ext
+        }`;
       }
 
       return (await fse.pathExists(thePath)) ? thePath : null;
