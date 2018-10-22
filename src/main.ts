@@ -137,13 +137,17 @@ export function mockImports({
       }
       const ext = path.extname(absPath);
       if (!isRelative(importee) || isNode(importee)) {
-        thePath = normaliseMockdules(
-          `${absPath}/${importee.split(".")[0]}`,
-          ext,
-          nodePath,
+        thePath = path.normalize(
+          normaliseMockdules(
+            `${absPath}/${importee.split(".")[0]}`,
+            ext,
+            nodePath,
+          ),
         );
       } else if (isWeirdNode(absPath, nodePath)) {
-        thePath = normaliseMockdules(`${absPath.split(".")[0]}`, ext, nodePath);
+        thePath = path.normalize(
+          normaliseMockdules(`${absPath.split(".")[0]}`, ext, nodePath),
+        );
       } else {
         let pathArray = absPath.split("/");
         const fileName = `${pathArray.slice(-1)[0].split(".")[0]}${
@@ -151,7 +155,7 @@ export function mockImports({
         }`;
         pathArray = [...pathArray.slice(0, -1), "__mocks__", fileName];
 
-        thePath = pathArray.join("/");
+        thePath = path.normalize(pathArray.join("/"));
       }
 
       return (await fse.pathExists(thePath)) ? thePath : null;
