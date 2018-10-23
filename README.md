@@ -107,7 +107,7 @@ Now the node module `some-module` will be automatically mocked with the `some-mo
     mock: undefined
   }), ...moreplugins],
 
-// other rollup stuf...
+// other rollup stuff...
 ```
 
 That's pretty much it for now. Should work most of the time. Probably.
