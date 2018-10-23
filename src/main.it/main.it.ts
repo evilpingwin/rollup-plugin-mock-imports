@@ -131,7 +131,7 @@ test("`mockall: false` with non-matching  mock patterns should be ignored", asyn
   expect(output).toEqual(expected);
 });
 
-test("'deep' mocks should work", async () => {
-  const { output, expected } = await build("22");
+test("it should mock out relative ts files correctly", async () => {
+  const { output, expected } = await build("23", {}, true, ".ts");
   expect(output).toEqual(expected);
 });

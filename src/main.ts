@@ -168,11 +168,13 @@ export function mockImports({
       } else {
         pathArr.splice(-1, 0, "__mocks__");
 
+        const currExt = path.parse(importer).ext === ".ts" ? ".ts" : ".js";
+
         thePath = `${path.join(
           // istanbul ignore next
           !isWin ? path.sep : "",
           ...pathArr,
-        )}${file.ext === "" ? ".js" : file.ext}`;
+        )}${currExt}`;
       }
 
       return (await fse.pathExists(thePath)) ? thePath : null;

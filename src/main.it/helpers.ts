@@ -1,10 +1,11 @@
 import crypto from "crypto";
 import fse from "fs-extra";
 import path from "path";
-import { rollup } from "rollup";
+import { rollup, RollupSingleFileBuild } from "rollup";
 import commonjs from "rollup-plugin-commonjs";
 import json from "rollup-plugin-json";
 import resolve from "rollup-plugin-node-resolve";
+import typescript from "rollup-plugin-typescript";
 import { mockImports } from "../main";
 
 const filePath = path.resolve(`${process.cwd()}/src/main.it`);
@@ -13,14 +14,18 @@ export async function build(
   num: string,
   mockOptions: object = {},
   unlink: boolean = true,
+  ext: string = ".js",
 ): Promise<{ output: string; expected: string }> {
   const bundle = await rollup({
-    input: `${filePath}/fixtures/test-mock-${num}.js`,
+    // @ts-ignore: This is patently wrong, who knows why
+    input: `${filePath}/fixtures/test-mock-${num}${ext}`,
     plugins: [
       mockImports(mockOptions),
       resolve({ browser: true }),
-      json(),
       commonjs(),
+      typescript({ declaration: false }),
+      // @ts-ignore: Type mismatchm no idea what is going on
+      json(),
     ],
   });
 

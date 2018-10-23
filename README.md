@@ -4,7 +4,7 @@ A [Rollup](www.rollupjs.org) plugin that provides a simple way to mock out ESM i
 
 Simply place `__mocks__` folder alongside relative imports or a `node_mockdules` folder alongside `node_modules` and this plugin will resolve imports to those files and folders instead of the real ones.
 
-There are various options you can make use of to customise the behaviour a little.
+There are various options you can make use of to customise the behaviour a little. It should work with typescript files as well but I'm not too confident about that right now, needs more tests.
 
 In most cases you'll want to use normal mocks (whichever mocking library you prefer) but this is useful when you need to compile before testing for whatever reason which often makes mocking difficult or impossible. I created this plugin so I could easily test Svelte components that had been compiled and mounted to a JSDOM instance without significantly altering how I wrote my code.
 
@@ -24,7 +24,7 @@ yarn add --dev rollup-plugin-mock-imports rollup
 
 ## Use it
 
-Simply import it as a named module and use it as a plugin. This will typically be used in a node environment so you will probably need [rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) as well. A standard config might look something like this:
+Simply import it as a named import and use it as a plugin. This will typically be used with npm modules so you will probably need [rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) as well. A standard config might look something like this:
 
 ```js
 // rollup.config.js
