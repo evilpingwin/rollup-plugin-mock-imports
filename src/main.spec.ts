@@ -223,3 +223,12 @@ test("`mockall: false` with non-matching `mock` patterns should be ignored", asy
     ),
   ).toBe(null);
 });
+
+test("it should mock out local ts files", async () => {
+  expect(
+    await mockImports().resolveId(
+      "../tests/something-else.ts",
+      `${currPath}/src/index.ts`,
+    ),
+  ).toBe(path.normalize(`${currPath}/tests/__mocks__/something-else.ts`));
+});
