@@ -6,7 +6,7 @@ Simply place `__mocks__` folder alongside relative imports or a `node_mockdules`
 
 There are various options you can make use of to customise the behaviour a little. It should work with typescript files as well but I'm not too confident about that right now, needs more tests.
 
-In most cases you'll want to use normal mocks (whichever mocking library you prefer) but this is useful when you need to compile before testing for whatever reason which often makes mocking difficult or impossible. I created this plugin so I could easily test Svelte components that had been compiled and mounted to a JSDOM instance without significantly altering how I wrote my code.
+In most cases you'll want to use normal mocks but this is useful when you need to compile before testing for whatever reason which often makes mocking difficult or impossible. I created this plugin so I could easily test Svelte components that had been compiled and mounted to a JSDOM instance without significantly altering how I wrote my code.
 
 _I chose `node_mockdules` partly because I am hilarious and partly because this means the mock and `node_modules` folders will be next to one another in most IDEs and File Managers: your happiness is my top priority. It also reminds of [DuckTales](https://en.wikipedia.org/wiki/DuckTales)._
 
@@ -107,7 +107,7 @@ Now the node module `some-module` will be automatically mocked with the `some-mo
     mock: undefined
   }), ...moreplugins],
 
-// other rollup stuf...
+// other rollup stuff...
 ```
 
 That's pretty much it for now. Should work most of the time. Probably.
