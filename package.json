@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-mock-imports",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Rollup plugin to mock es6 imports",
   "main": "dist/main.cjs.js",
   "module": "dist/main.esm.js",
