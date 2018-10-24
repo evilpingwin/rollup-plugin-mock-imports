@@ -232,3 +232,23 @@ test("it should mock out local ts files", async () => {
     ),
   ).toBe(path.normalize(`${currPath}/tests/__mocks__/something-else.ts`));
 });
+
+// it often isn't allowed to use .ts extensions when importing, this needs to work
+test("it should mock out local ts files without an extension", async () => {
+  expect(
+    await mockImports().resolveId(
+      "../tests/something-else",
+      `${currPath}/src/index.ts`,
+    ),
+  ).toBe(path.normalize(`${currPath}/tests/__mocks__/something-else.ts`));
+});
+
+// People import all kinds of shit
+test("it should mock out any kind of file as long as the import has an extension", async () => {
+  expect(
+    await mockImports().resolveId(
+      "../tests/index.html",
+      `${currPath}/src/index.ts`,
+    ),
+  ).toBe(path.normalize(`${currPath}/tests/__mocks__/index.html`));
+});
