@@ -64,15 +64,18 @@ const checkForRoot = async (maybeRoot: string): Promise<[boolean, string]> => {
   }
 };
 
-const normaliseMockdules = (
-  filePath: string,
-  ext: string,
-  nodePath: string,
-): string => {
-  return `${filePath}${ext === "" ? ".js" : ext}`.replace(
-    nodePath,
-    "node_mockdules",
+const normaliseMockdules = (filePath: string, nodePath: string): string => {
+  return `${filePath}`.replace(nodePath, "node_mockdules");
+};
+
+const checkForFile = async (filePath: string) => {
+  const extensions: string[] = [".js", ".ts", ".jsx", ".tsx", ".json", ".node"];
+  const checkedFiles = await Promise.all(
+    extensions.map(async ext => fse.pathExists(`${filePath}${ext}`)),
   );
+  const correctFile: number = checkedFiles.findIndex(v => v === true);
+
+  return correctFile > -1 ? `${filePath}${extensions[correctFile]}` : false;
 };
 
 const shouldItRun = (
@@ -118,10 +121,11 @@ export function mockImports({
         const root = await checkForRoot(process.cwd());
         if (root[0]) {
           const mockPath = path.normalize(
-            `${root[1]}/node_mockdules/${importee}.js`,
+            `${root[1]}/node_mockdules/${importee}`,
           );
+          const correctPath = await checkForFile(mockPath);
 
-          return (await fse.pathExists(mockPath)) ? mockPath : null;
+          return correctPath !== false ? correctPath : null;
         } else {
           console.warn(
             "Couldn't resolve root path. Deferring to default module resolution.",
@@ -143,18 +147,19 @@ export function mockImports({
       }
 
       // Oh dear
-      const pathArr = absPath.split(path.sep);
-      const impArr = path
+      const pathArr: string[] = absPath.split(path.sep);
+      const impArr: string[] = path
         .normalize(importee)
         .split(path.sep)
         .filter(v => v !== "." && v !== "..");
-      const file = path.parse(pathArr[pathArr.length - 1]);
+      const ext: string = path.parse(importee).ext;
       const find: number = pathArr.findIndex(v => v === impArr[0]);
 
       pathArr.splice(find, find + importee.split(path.sep).length, ...impArr);
       pathArr[pathArr.length - 1] = path.parse(
         pathArr[pathArr.length - 1],
       ).name;
+
       absPath = path.resolve(
         path.join(
           // istanbul ignore next
@@ -164,20 +169,26 @@ export function mockImports({
       );
 
       if (absPath.includes(nodePath)) {
-        thePath = normaliseMockdules(absPath, file.ext, nodePath);
+        thePath = normaliseMockdules(absPath, nodePath);
       } else {
         pathArr.splice(-1, 0, "__mocks__");
-
-        const currExt = path.parse(importer).ext === ".ts" ? ".ts" : ".js";
 
         thePath = `${path.join(
           // istanbul ignore next
           !isWin ? path.sep : "",
           ...pathArr,
-        )}${currExt}`;
+        )}`;
       }
 
-      return (await fse.pathExists(thePath)) ? thePath : null;
+      if (ext !== "") {
+        thePath = `${thePath}${ext}`;
+
+        return (await fse.pathExists(thePath)) ? thePath : null;
+      } else {
+        const correctPath = await checkForFile(thePath);
+
+        return correctPath !== false ? correctPath : null;
+      }
     },
   };
 }
