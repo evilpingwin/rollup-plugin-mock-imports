@@ -252,3 +252,12 @@ test("it should mock out any kind of file as long as the import has an extension
     ),
   ).toBe(path.normalize(`${currPath}/tests/__mocks__/index.html`));
 });
+
+test("it should mock extensionless ts files imported from html files", async () => {
+  expect(
+    await mockImports().resolveId(
+      "../tests/something-else",
+      `${currPath}/src/index.html`,
+    ),
+  ).toBe(path.normalize(`${currPath}/tests/__mocks__/something-else.ts`));
+});

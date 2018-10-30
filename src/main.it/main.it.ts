@@ -133,5 +133,16 @@ test("`mockall: false` with non-matching  mock patterns should be ignored", asyn
 
 test("it should mock out relative ts files correctly", async () => {
   const { output, expected } = await build("23", {}, true, ".ts");
+
+  expect(output).toEqual(expected);
+});
+
+test("it should mock out extensionless ts files imported from html files", async () => {
+  const { output, expected } = await build("24", {}, true, ".html");
+  expect(output).toEqual(expected);
+});
+
+test("it shouldn't mock out extensionless ts files imported from html files, if they don't exist", async () => {
+  const { output, expected } = await build("25", {}, true, ".html");
   expect(output).toEqual(expected);
 });
