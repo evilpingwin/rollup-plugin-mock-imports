@@ -1,7 +1,7 @@
 import fse from "fs-extra";
 import isBuiltIn from "is-builtin-module";
 import isRelative from "is-relative";
-import path from "path";
+import path, { normalize } from "path";
 import { isNode } from "./util";
 
 const isWin = process.platform === "win32";
@@ -69,7 +69,16 @@ const normaliseMockdules = (filePath: string, nodePath: string): string => {
 };
 
 const checkForFile = async (filePath: string) => {
-  const extensions: string[] = [".js", ".ts", ".jsx", ".tsx", ".json", ".node"];
+  const extensions: string[] = [
+    ".js",
+    ".ts",
+    ".jsx",
+    ".tsx",
+    ".json",
+    ".node",
+    ".html",
+    ".svelte",
+  ];
   const checkedFiles = await Promise.all(
     extensions.map(async ext => fse.pathExists(`${filePath}${ext}`)),
   );
@@ -114,6 +123,7 @@ export function mockImports({
       // istanbul ignore else
 
       if (!shouldItRun(mockall, importer, importee, ignore, mock)) return null;
+
       // builtins are mocked like node modules
       let thePath;
 
@@ -143,10 +153,17 @@ export function mockImports({
             ? require.resolve(importee)
             : path.resolve(path.dirname(importer), importee);
       } catch {
-        return null;
+        try {
+          absPath = await checkForFile(
+            path.normalize(`${path.dirname(importer)}/${importee}`),
+          );
+        } catch {
+          // istanbul ignore next
+          return null;
+        }
       }
+      if (!absPath) return null;
 
-      // Oh dear
       const pathArr: string[] = absPath.split(path.sep);
       const impArr: string[] = path
         .normalize(importee)
@@ -180,15 +197,10 @@ export function mockImports({
         )}`;
       }
 
-      if (ext !== "") {
-        thePath = `${thePath}${ext}`;
+      const filePath = await checkForFile(thePath);
 
-        return (await fse.pathExists(thePath)) ? thePath : null;
-      } else {
-        const correctPath = await checkForFile(thePath);
-
-        return correctPath !== false ? correctPath : null;
-      }
+      return filePath !== false ? filePath : null;
+      // }
     },
   };
 }

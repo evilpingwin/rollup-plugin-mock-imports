@@ -1,16 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ES6",
     "diagnostics": true,
     "noImplicitThis": true,
-    "lib": ["es5", "es6", "es7", "dom"],
+    "noEmitOnError": true,
+    "lib": ["es5", "es6", "es2017", "dom"],
     "importHelpers": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
+    "module": "esnext",
+
     "outDir": "./dist",
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "declaration": true,
-    "typeRoots": ["./types", "./node_modules/@types"]
+
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "allowJs": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "./types", "src/main.spec.ts", "src/main.it"]

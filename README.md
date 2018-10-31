@@ -91,7 +91,7 @@ Now the node module `some-module` will be automatically mocked with the `some-mo
     // string | RegExp | (RegExp | string)<Array>
     ignore: undefined,
     // the opposite of ignore. If mockall is `false`
-    // you can mock on a cases by case basis.
+    // you can mock on a case by case basis.
     //
     // if any of the mock patterns match the import
     // ('./myFile' or 'my-module') it will be mocked
