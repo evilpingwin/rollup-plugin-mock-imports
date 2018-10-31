@@ -77,6 +77,7 @@ const checkForFile = async (filePath: string) => {
     ".json",
     ".node",
     ".html",
+    ".svelte",
   ];
   const checkedFiles = await Promise.all(
     extensions.map(async ext => fse.pathExists(`${filePath}${ext}`)),
