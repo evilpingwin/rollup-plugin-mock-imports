@@ -163,7 +163,6 @@ export function mockImports({
           return null;
         }
       }
-      console.log(absPath);
       if (!absPath) return null;
 
       const pathArr: string[] = absPath.split(path.sep);
