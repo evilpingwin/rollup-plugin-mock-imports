@@ -68,7 +68,7 @@ const normaliseMockdules = (filePath: string, nodePath: string): string => {
   return `${filePath}`.replace(nodePath, "node_mockdules");
 };
 
-const checkForFile = async (filePath: string) => {
+const checkForFile = async (filePath: string): Promise<string | false> => {
   const extensions: string[] = [
     ".js",
     ".ts",
@@ -110,6 +110,23 @@ const shouldItRun = (
   return true;
 };
 
+const resolveBuiltIn = async (importee: string): Promise<string | null> => {
+  const root = await checkForRoot(process.cwd());
+
+  if (root[0]) {
+    const mockPath = path.normalize(`${root[1]}/node_mockdules/${importee}`);
+    const correctPath = await checkForFile(mockPath);
+
+    return correctPath !== false ? correctPath : null;
+  } else {
+    console.warn(
+      "Couldn't resolve root path. Deferring to default module resolution.",
+    );
+
+    return null;
+  }
+};
+
 export function mockImports({
   mockall = true,
   ignore,
@@ -118,35 +135,19 @@ export function mockImports({
 }: UserOptions = defaultOptions): MockOptions {
   return {
     name: "mock-imports",
-    async resolveId(importee, importer) {
-      // ts lint was shouting at me so I had to break these conditionals out
+    async resolveId(
+      importee: string,
+      importer: string,
+    ): Promise<string | null> {
       // istanbul ignore else
 
       if (!shouldItRun(mockall, importer, importee, ignore, mock)) return null;
 
-      // builtins are mocked like node modules
-      let thePath;
-
       if (isBuiltIn(importee)) {
-        const root = await checkForRoot(process.cwd());
-        if (root[0]) {
-          const mockPath = path.normalize(
-            `${root[1]}/node_mockdules/${importee}`,
-          );
-          const correctPath = await checkForFile(mockPath);
-
-          return correctPath !== false ? correctPath : null;
-        } else {
-          console.warn(
-            "Couldn't resolve root path. Deferring to default module resolution.",
-          );
-
-          return null;
-        }
+        return resolveBuiltIn(importee);
       }
 
       let absPath;
-
       try {
         absPath =
           !isRelative(importee) || isNode(importee)
@@ -162,6 +163,7 @@ export function mockImports({
           return null;
         }
       }
+      console.log(absPath);
       if (!absPath) return null;
 
       const pathArr: string[] = absPath.split(path.sep);
@@ -169,7 +171,6 @@ export function mockImports({
         .normalize(importee)
         .split(path.sep)
         .filter(v => v !== "." && v !== "..");
-      const ext: string = path.parse(importee).ext;
       const find: number = pathArr.findIndex(v => v === impArr[0]);
 
       pathArr.splice(find, find + importee.split(path.sep).length, ...impArr);
@@ -185,6 +186,7 @@ export function mockImports({
         ),
       );
 
+      let thePath;
       if (absPath.includes(nodePath)) {
         thePath = normaliseMockdules(absPath, nodePath);
       } else {
@@ -200,7 +202,6 @@ export function mockImports({
       const filePath = await checkForFile(thePath);
 
       return filePath !== false ? filePath : null;
-      // }
     },
   };
 }
