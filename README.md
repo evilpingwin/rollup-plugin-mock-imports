@@ -1,3 +1,5 @@
+_This was a pretty pointless experiment_
+
 # rollup-plugin-mock-imports
 
 A [Rollup](www.rollupjs.org) plugin that provides a simple way to mock out ESM imports when bundling. Takes a similar approach to Jest's manual mocks.
